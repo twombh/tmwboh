@@ -15,9 +15,6 @@ class OverlayService : Service() {
     private var dragHandler: DragHandler? = null
     private var isOverlayVisible = false
     
-    // 앱의 포그라운드/백그라운드 상태 추적
-    private var isAppInForeground = true // 기본값을 true로 설정 (서비스 시작 시 앱이 포그라운드에 있음)
-    
     // LocalBinder for ViewModel binding
     private val binder = LocalBinder()
     
@@ -27,11 +24,6 @@ class OverlayService : Service() {
     
     companion object {
         private const val TAG = "OverlayService"
-        
-        const val ACTION_SHOW_OVERLAY = "com.example.dynamic.SHOW_OVERLAY"
-        const val ACTION_HIDE_OVERLAY = "com.example.dynamic.HIDE_OVERLAY"
-        const val ACTION_APP_FOREGROUND = "com.example.dynamic.APP_FOREGROUND"
-        const val ACTION_APP_BACKGROUND = "com.example.dynamic.APP_BACKGROUND"
         
         // SharedPreferences 키
         private const val PREF_NAME = "overlay_prefs"
@@ -47,8 +39,7 @@ class OverlayService : Service() {
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Intent로 명령 처리
-        intent?.let { handleIntent(it) }
+        // 플래그 기반 오버레이 제어만 사용
         return START_STICKY
     }
     
@@ -58,28 +49,7 @@ class OverlayService : Service() {
         cleanupOverlay()
     }
     
-    /**
-     * Intent 처리 - 앱 상태 변화만 처리 (중복 제거)
-     */
-    private fun handleIntent(intent: Intent) {
-        when (intent.action) {
-            ACTION_APP_FOREGROUND -> {
-                Log.d(TAG, "📱 앱이 포그라운드로 이동")
-                isAppInForeground = true
-                updateOverlayVisibility()
-            }
-            ACTION_APP_BACKGROUND -> {
-                Log.d(TAG, "🏠 앱이 백그라운드로 이동")
-                isAppInForeground = false
-                updateOverlayVisibility()
-            }
-            // 레거시 액션들 (사용 안함)
-            ACTION_SHOW_OVERLAY, ACTION_HIDE_OVERLAY -> {
-                Log.d(TAG, "⚠️ 레거시 액션 무시: ${intent.action}")
-                // 더 이상 사용하지 않음 - 앱 상태 변화로만 제어
-            }
-        }
-    }
+
     
     /**
      * 현재 플래그 상태 확인
@@ -121,15 +91,16 @@ class OverlayService : Service() {
     
     /**
      * 오버레이 visibility 업데이트 (핵심 로직)
+     * 플래그 상태만으로 오버레이 표시/숨김 제어 (앱 상태 무관)
      */
     private fun updateOverlayVisibility() {
         val currentFlag = getOverlayFlag()
-        val shouldShow = currentFlag == 1 && !isAppInForeground
+        val shouldShow = currentFlag == 1  // 앱 상태 체크 제거 - 오직 플래그만으로 제어
         val actualVisibility = getActualViewVisibility()
         
-        Log.d(TAG, "🔍 상태 체크 - 플래그: $currentFlag, 앱포그라운드: $isAppInForeground, 추적된오버레이: $isOverlayVisible")
+        Log.d(TAG, "🔍 상태 체크 - 플래그: $currentFlag, 추적된오버레이: $isOverlayVisible")
         Log.d(TAG, "🔍 실제 View visibility: $actualVisibility")
-        Log.d(TAG, "🤔 표시해야함: $shouldShow")
+        Log.d(TAG, "🤔 표시해야함: $shouldShow (플래그만으로 결정)")
         
         // 실제 View 상태와 추적 상태가 다르면 경고
         val actuallyVisible = (actualVisibility == "VISIBLE")
@@ -141,11 +112,11 @@ class OverlayService : Service() {
         
         if (shouldShow && !isOverlayVisible) {
             // 표시해야 하는데 안 보이면 → 표시
-            Log.d(TAG, "✅ 오버레이 표시!")
+            Log.d(TAG, "✅ 오버레이 표시! (플래그=1)")
             showOverlay()
         } else if (!shouldShow && isOverlayVisible) {
             // 숨겨야 하는데 보이면 → 숨김
-            Log.d(TAG, "❌ 오버레이 숨김!")
+            Log.d(TAG, "❌ 오버레이 숨김! (플래그=0)")
             hideOverlay()
         } else {
             Log.d(TAG, "➡️ 상태 변화 없음")
@@ -284,7 +255,7 @@ class OverlayService : Service() {
     }
     
     /**
-     * 오버레이 표시 상태 확인
+     * 오버레이 표시 상태 확인 (플래그 상태만으로 결정)
      */
-    fun isOverlayVisible(): Boolean = isOverlayVisible && getOverlayFlag() == 1 && !isAppInForeground
+    fun isOverlayVisible(): Boolean = isOverlayVisible && getOverlayFlag() == 1
 } 
