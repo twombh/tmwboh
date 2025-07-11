@@ -34,7 +34,7 @@ class OverlayService : Service() {
     
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "🔧 OverlayService onCreate")
+        Log.d(TAG, "OverlayService onCreate")
         setupOverlay()
     }
     
@@ -45,7 +45,7 @@ class OverlayService : Service() {
     
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "💀 OverlayService onDestroy")
+        Log.d(TAG, "OverlayService onDestroy")
         cleanupOverlay()
     }
     
@@ -66,7 +66,7 @@ class OverlayService : Service() {
         val prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         prefs.edit().putInt(KEY_OVERLAY_FLAG, flag).apply()
         
-        Log.d(TAG, "🏁 플래그 변경됨: $flag")
+        Log.d(TAG, "플래그 변경됨: $flag")
         
         // 플래그 변경 시 오버레이 완전히 재생성 (새로운 XML 적용)
         if (flag == 1) {
@@ -98,32 +98,32 @@ class OverlayService : Service() {
         val shouldShow = currentFlag == 1  // 앱 상태 체크 제거 - 오직 플래그만으로 제어
         val actualVisibility = getActualViewVisibility()
         
-        Log.d(TAG, "🔍 상태 체크 - 플래그: $currentFlag, 추적된오버레이: $isOverlayVisible")
-        Log.d(TAG, "🔍 실제 View visibility: $actualVisibility")
-        Log.d(TAG, "🤔 표시해야함: $shouldShow (플래그만으로 결정)")
+        Log.d(TAG, "상태 체크 - 플래그: $currentFlag, 추적된오버레이: $isOverlayVisible")
+        Log.d(TAG, "실제 View visibility: $actualVisibility")
+        Log.d(TAG, "표시해야함: $shouldShow (플래그만으로 결정)")
         
         // 실제 View 상태와 추적 상태가 다르면 경고
         val actuallyVisible = (actualVisibility == "VISIBLE")
         if (actuallyVisible != isOverlayVisible) {
-            Log.e(TAG, "🚨 상태 불일치! 추적: $isOverlayVisible, 실제: $actuallyVisible")
+            Log.e(TAG, "상태 불일치! 추적: $isOverlayVisible, 실제: $actuallyVisible")
             // 실제 상태로 동기화
             isOverlayVisible = actuallyVisible
         }
         
         if (shouldShow && !isOverlayVisible) {
             // 표시해야 하는데 안 보이면 → 표시
-            Log.d(TAG, "✅ 오버레이 표시! (플래그=1)")
+            Log.d(TAG, "오버레이 표시 (플래그=1)")
             showOverlay()
         } else if (!shouldShow && isOverlayVisible) {
             // 숨겨야 하는데 보이면 → 숨김
-            Log.d(TAG, "❌ 오버레이 숨김! (플래그=0)")
+            Log.d(TAG, "오버레이 숨김 (플래그=0)")
             hideOverlay()
         } else {
-            Log.d(TAG, "➡️ 상태 변화 없음")
+            Log.d(TAG, "상태 변화 없음")
         }
         
         // 최종 상태 확인
-        Log.d(TAG, "🏁 최종 상태 - 추적: $isOverlayVisible, 실제: ${getActualViewVisibility()}")
+        Log.d(TAG, "최종 상태 - 추적: $isOverlayVisible, 실제: ${getActualViewVisibility()}")
     }
     
     /**
@@ -146,7 +146,7 @@ class OverlayService : Service() {
      * 오버레이 완전히 재생성 (새로운 XML 적용)
      */
     private fun recreateOverlay() {
-        Log.d(TAG, "🔄 오버레이 재생성 시작")
+        Log.d(TAG, "오버레이 재생성 시작")
         
         // 기존 오버레이 완전히 제거
         cleanupOverlay()
@@ -157,7 +157,7 @@ class OverlayService : Service() {
         // 현재 상태에 맞춰 visibility 설정
         updateOverlayVisibility()
         
-        Log.d(TAG, "🔄 오버레이 재생성 완료")
+        Log.d(TAG, "오버레이 재생성 완료")
     }
     
     /**
@@ -168,13 +168,13 @@ class OverlayService : Service() {
         val result = overlayManager?.createOverlay(touchListener)
         
         if (result == null) {
-            Log.e(TAG, "❌ 오버레이 생성 실패")
+            Log.e(TAG, "오버레이 생성 실패")
             // 오버레이 생성 실패 시 서비스 종료
             stopSelf()
         } else {
             val (view, params) = result
-            Log.d(TAG, "✅ 오버레이 생성 성공 (XML inflate)")
-            Log.d(TAG, "🔍 생성 직후 View visibility: ${getActualViewVisibility()}")
+            Log.d(TAG, "오버레이 생성 성공 (XML inflate)")
+            Log.d(TAG, "생성 직후 View visibility: ${getActualViewVisibility()}")
             
             // 서비스 시작 시 강제로 숨김 상태로 설정
             forceHideOverlay()
@@ -205,8 +205,8 @@ class OverlayService : Service() {
         if (view != null && !isOverlayVisible) {
             view.visibility = View.VISIBLE
             isOverlayVisible = true
-            Log.d(TAG, "👁️ 오버레이 표시됨 (isOverlayVisible = true)")
-            Log.d(TAG, "🔍 표시 후 실제 visibility: ${getActualViewVisibility()}")
+            Log.d(TAG, "오버레이 표시됨 (isOverlayVisible = true)")
+            Log.d(TAG, "표시 후 실제 visibility: ${getActualViewVisibility()}")
         }
     }
     
@@ -218,8 +218,8 @@ class OverlayService : Service() {
         if (view != null && isOverlayVisible) {
             view.visibility = View.GONE
             isOverlayVisible = false
-            Log.d(TAG, "🙈 오버레이 숨겨짐 (isOverlayVisible = false)")
-            Log.d(TAG, "🔍 숨김 후 실제 visibility: ${getActualViewVisibility()}")
+            Log.d(TAG, "오버레이 숨겨짐 (isOverlayVisible = false)")
+            Log.d(TAG, "숨김 후 실제 visibility: ${getActualViewVisibility()}")
         }
     }
     
@@ -231,8 +231,8 @@ class OverlayService : Service() {
         if (view != null) {
             view.visibility = View.GONE
             isOverlayVisible = false
-            Log.d(TAG, "🔨 강제 숨김 완료 (isOverlayVisible = false)")
-            Log.d(TAG, "🔍 강제 숨김 후 실제 visibility: ${getActualViewVisibility()}")
+            Log.d(TAG, "강제 숨김 완료 (isOverlayVisible = false)")
+            Log.d(TAG, "강제 숨김 후 실제 visibility: ${getActualViewVisibility()}")
         }
     }
     
@@ -244,7 +244,7 @@ class OverlayService : Service() {
         overlayManager = null
         dragHandler = null
         isOverlayVisible = false
-        Log.d(TAG, "🧹 오버레이 정리 완료")
+        Log.d(TAG, "오버레이 정리 완료")
     }
     
     /**

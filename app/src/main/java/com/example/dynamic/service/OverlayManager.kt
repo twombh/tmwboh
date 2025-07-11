@@ -20,21 +20,21 @@ class OverlayManager(
     private val windowManager: WindowManager
 ) {
     
-    private var overlayView: View? = null
-    private var layoutParams: WindowManager.LayoutParams? = null
+    private var overlayView: View? = null // 현재 표시 중인 오버레이
+    private var layoutParams: WindowManager.LayoutParams? = null // 오버레이의 레이아웃 속성
     
-    // 반응형 크기 계산을 위한 변수들
-    private val screenMetrics = getScreenMetrics()
-    private val responsiveSizes = calculateResponsiveSizes()
+    // 반응형 크기 계산을 위한 화면 정보와 계산된 크기
+    private val screenMetrics = getScreenMetrics() // 현재 디바이스 해상도 정보
+    private val responsiveSizes = calculateResponsiveSizes() // 해상도 기반 동적 크기 설정
     
     companion object {
         private const val TAG = "OverlayManager"
         
-        // 기준 화면 크기 (CSS 스펙 기준)
+        // 기준 화면 크기 - dp 단위
         private const val REFERENCE_SCREEN_WIDTH = 412f
         private const val REFERENCE_SCREEN_HEIGHT = 892f
         
-        // 기준 오버레이 크기
+        // 기준 오버레이 크기 UI 요소 크기
         private const val REFERENCE_OVERLAY_WIDTH = 276f
         private const val REFERENCE_OVERLAY_HEIGHT = 100f
         private const val REFERENCE_BORDER_RADIUS = 30f
@@ -42,20 +42,16 @@ class OverlayManager(
         private const val REFERENCE_FONT_SIZE_SMALL = 16f
     }
     
-    /**
-     * 화면 크기 정보 가져오기 (Service Context 호환)
-     */
+    // 화면 크기 정보 가져오기
     private fun getScreenMetrics(): DisplayMetrics {
         val metrics = DisplayMetrics()
         // Service Context에서는 WindowManager를 통해서만 Display 접근 가능
-        @Suppress("DEPRECATION")
-        windowManager.defaultDisplay.getRealMetrics(metrics)
+        @Suppress("DEPRECATION") // 컴파일 시 오류 무시
+        windowManager.defaultDisplay.getRealMetrics(metrics) // 화면 전체 픽셀 정보 가져오기
         return metrics
     }
     
-    /**
-     * 반응형 크기 계산
-     */
+    // 반응형 크기 계산
     private fun calculateResponsiveSizes(): ResponsiveSizes {
         val screenWidthPx = screenMetrics.widthPixels.toFloat()
         val screenHeightPx = screenMetrics.heightPixels.toFloat()
@@ -65,17 +61,17 @@ class OverlayManager(
         val screenWidthDp = screenWidthPx / density
         val screenHeightDp = screenHeightPx / density
         
-        Log.d(TAG, "📱 화면 크기: ${screenWidthDp}dp x ${screenHeightDp}dp (밀도: $density)")
+        Log.d(TAG, "화면 크기: ${screenWidthDp}dp x ${screenHeightDp}dp (밀도: $density)")
         
-        // 비율 계산 (기준 화면 대비)
+        // 비율 계산 - 기준 화면 대비
         val widthRatio = screenWidthDp / REFERENCE_SCREEN_WIDTH
         val heightRatio = screenHeightDp / REFERENCE_SCREEN_HEIGHT
         
         // 더 작은 비율을 사용하여 화면 밖으로 나가는 것 방지
         val scaleFactor = minOf(widthRatio, heightRatio)
         
-        Log.d(TAG, "📏 스케일 팩터: $scaleFactor (가로비: $widthRatio, 세로비: $heightRatio)")
-        
+        Log.d(TAG, "스케일 팩터: $scaleFactor (가로비: $widthRatio, 세로비: $heightRatio)")
+
         return ResponsiveSizes(
             overlayWidth = (REFERENCE_OVERLAY_WIDTH * scaleFactor).toInt(),
             overlayHeight = (REFERENCE_OVERLAY_HEIGHT * scaleFactor).toInt(),
@@ -91,9 +87,7 @@ class OverlayManager(
         )
     }
     
-    /**
-     * 반응형 크기 데이터 클래스
-     */
+    // 반응형 크기 담는 데이터 클래스
     data class ResponsiveSizes(
         val overlayWidth: Int,
         val overlayHeight: Int,
@@ -108,16 +102,14 @@ class OverlayManager(
         val padding24dp: Int
     )
     
-    /**
-     * 오버레이 생성 및 화면에 추가
-     */
+    // 오버레이 생성 및 화면에 추가
     fun createOverlay(onTouchListener: View.OnTouchListener): Pair<View, WindowManager.LayoutParams>? {
         try {
-            // XML 레이아웃을 inflate하여 오버레이 뷰 생성
+            // XML 레이아웃을 객체화하여 오버레이 뷰 생성
             val inflater = LayoutInflater.from(context)
-            Log.d(TAG, "🔧 XML 레이아웃 inflate 시작: R.layout.overlay_layout")
+            Log.d(TAG, "XML 레이아웃 inflate 시작: R.layout.overlay_layout")
             val view = inflater.inflate(R.layout.overlay_layout, null)
-            Log.d(TAG, "🔧 XML 레이아웃 inflate 완료: ${view::class.simpleName}")
+            Log.d(TAG, "XML 레이아웃 inflate 완료: ${view::class.simpleName}")
             
             // 반응형 크기 적용
             applyResponsiveSizes(view)
@@ -131,25 +123,22 @@ class OverlayManager(
             // 터치 리스너 설정
             view.setOnTouchListener(onTouchListener)
             
-            // 윈도우 매니저에 뷰 추가
+            // 윈도우 매니저에 뷰 추가 - 화면에 표시
             windowManager.addView(view, params)
-            
-            // 내부 참조 저장
+
             overlayView = view
             layoutParams = params
             
-            Log.d(TAG, "✅ 오버레이 생성 완료 (반응형 크기: ${responsiveSizes.overlayWidth}x${responsiveSizes.overlayHeight}dp)")
+            Log.d(TAG, "오버레이 생성 완료 (반응형 크기: ${responsiveSizes.overlayWidth}x${responsiveSizes.overlayHeight}dp)")
             return Pair(view, params)
             
         } catch (e: Exception) {
-            Log.e(TAG, "❌ 오버레이 생성 실패: ${e.message}", e)
+            Log.e(TAG, "오버레이 생성 실패: ${e.message}", e)
             return null
         }
     }
     
-    /**
-     * 반응형 크기 적용 (완전 동적 조정)
-     */
+    // View에 반응형 크기 적용
     private fun applyResponsiveSizes(view: View) {
         // 1. 컨테이너 최소 크기 및 패딩 설정
         val container = view.findViewById<LinearLayout>(R.id.overlayContainer)
@@ -162,7 +151,7 @@ class OverlayManager(
             cont.minimumWidth = dpToPx(responsiveSizes.overlayWidth.toFloat()).toInt()
             cont.minimumHeight = dpToPx(responsiveSizes.overlayHeight.toFloat()).toInt()
             
-            Log.d(TAG, "📦 컨테이너 설정: 최소크기 ${responsiveSizes.overlayWidth}x${responsiveSizes.overlayHeight}dp, 패딩 ${responsiveSizes.padding24dp}dp")
+            Log.d(TAG, "컨테이너 설정: 최소크기 ${responsiveSizes.overlayWidth}x${responsiveSizes.overlayHeight}dp, 패딩 ${responsiveSizes.padding24dp}dp")
         }
         
         // 2. 로고 크기 조정
@@ -177,7 +166,7 @@ class OverlayManager(
             logoParams.setMargins(0, 0, dpToPx(responsiveSizes.gap16dp.toFloat()).toInt(), 0)
             logo.layoutParams = logoParams
             
-            Log.d(TAG, "🖼️ 로고 설정: ${responsiveSizes.logoSize}x${responsiveSizes.logoSize}dp")
+            Log.d(TAG, "로고 설정: ${responsiveSizes.logoSize}x${responsiveSizes.logoSize}dp")
         }
         
         // 3. 간격 조정
@@ -186,7 +175,7 @@ class OverlayManager(
         // 4. 텍스트 크기 조정
         adjustTextSizes(view)
         
-        Log.d(TAG, "📐 반응형 크기 적용 완료: ${responsiveSizes}")
+        Log.d(TAG, "반응형 크기 적용 완료: ${responsiveSizes}")
     }
     
     /**
@@ -221,7 +210,7 @@ class OverlayManager(
             space.layoutParams = params
         }
         
-        Log.d(TAG, "📏 간격 조정 완료: gap12=${responsiveSizes.gap12dp}dp, gap4=${responsiveSizes.gap4dp}dp, gap2=${responsiveSizes.gap2dp}dp")
+        Log.d(TAG, "간격 조정 완료: gap12=${responsiveSizes.gap12dp}dp, gap4=${responsiveSizes.gap4dp}dp, gap2=${responsiveSizes.gap2dp}dp")
     }
     
     /**
@@ -231,19 +220,19 @@ class OverlayManager(
         // 따릉이 텍스트
         view.findViewById<TextView>(R.id.ddareungiText)?.let { textView ->
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, responsiveSizes.fontSizeLarge)
-            Log.d(TAG, "📝 따릉이 텍스트 크기: ${responsiveSizes.fontSizeLarge}sp")
+            Log.d(TAG, "따릉이 텍스트 크기: ${responsiveSizes.fontSizeLarge}sp")
         }
         
         // 대여중 텍스트  
         view.findViewById<TextView>(R.id.daeyeojungText)?.let { textView ->
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, responsiveSizes.fontSizeLarge)
-            Log.d(TAG, "📝 대여중 텍스트 크기: ${responsiveSizes.fontSizeLarge}sp")
+            Log.d(TAG, "대여중 텍스트 크기: ${responsiveSizes.fontSizeLarge}sp")
         }
         
         // 부제목 텍스트
         view.findViewById<TextView>(R.id.subtitleText)?.let { textView ->
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, responsiveSizes.fontSizeSmall)
-            Log.d(TAG, "📝 부제목 텍스트 크기: ${responsiveSizes.fontSizeSmall}sp")
+            Log.d(TAG, "부제목 텍스트 크기: ${responsiveSizes.fontSizeSmall}sp")
         }
     }
     
@@ -268,18 +257,18 @@ class OverlayManager(
         val container = view.findViewById<View>(R.id.overlayContainer)
         if (container != null) {
             container.background = createRoundedBackground()
-            Log.d(TAG, "✅ 컨테이너 배경 설정 완료")
+            Log.d(TAG, "컨테이너 배경 설정 완료")
         } else {
-            Log.e(TAG, "❌ overlayContainer ID 찾을 수 없음!")
+            Log.e(TAG, "overlayContainer ID 찾을 수 없음!")
         }
         
         // 로고 배경 (원형 초록색)
         val logoView = view.findViewById<View>(R.id.logoView)
         if (logoView != null) {
             logoView.background = createLogoBackground()
-            Log.d(TAG, "✅ 로고 배경 설정 완료")
+            Log.d(TAG, "로고 배경 설정 완료")
         } else {
-            Log.e(TAG, "❌ logoView ID 찾을 수 없음!")
+            Log.e(TAG, "logoView ID 찾을 수 없음!")
         }
     }
     
@@ -311,9 +300,9 @@ class OverlayManager(
         overlayView?.let { view ->
             try {
                 windowManager.removeView(view)
-                Log.d(TAG, "✅ 오버레이 제거 완료")
+                Log.d(TAG, "오버레이 제거 완료")
             } catch (e: Exception) {
-                Log.e(TAG, "❌ 오버레이 제거 실패: ${e.message}", e)
+                Log.e(TAG, "오버레이 제거 실패: ${e.message}", e)
             }
         }
         

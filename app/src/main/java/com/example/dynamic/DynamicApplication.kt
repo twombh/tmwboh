@@ -16,7 +16,7 @@ class DynamicApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         
-        Log.d(TAG, "🚀 DynamicApplication onCreate")
+        Log.d(TAG, "DynamicApplication onCreate")
     }
     
     /**
@@ -24,12 +24,12 @@ class DynamicApplication : Application() {
      */
     fun startOverlayService() {
         if (!isOverlayServiceRunning) {
-            Log.d(TAG, "🔧 오버레이 서비스 시작")
+            Log.d(TAG, "오버레이 서비스 시작")
             val intent = Intent(this, OverlayService::class.java)
             startService(intent)
             isOverlayServiceRunning = true
         } else {
-            Log.d(TAG, "⚠️ 오버레이 서비스 이미 실행 중")
+            Log.d(TAG, "⚠오버레이 서비스 이미 실행 중")
         }
     }
     
@@ -38,12 +38,12 @@ class DynamicApplication : Application() {
      */
     fun stopOverlayService() {
         if (isOverlayServiceRunning) {
-            Log.d(TAG, "🛑 오버레이 서비스 중지")
+            Log.d(TAG, "오버레이 서비스 중지")
             val intent = Intent(this, OverlayService::class.java)
             stopService(intent)
             isOverlayServiceRunning = false
         } else {
-            Log.d(TAG, "⚠️ 오버레이 서비스 이미 중지됨")
+            Log.d(TAG, "오버레이 서비스 이미 중지됨")
         }
     }
     
