@@ -12,9 +12,9 @@ import com.example.dynamic.MainActivity
 import kotlin.math.abs
 
 class DragHandler(
-    private val windowManager: WindowManager,
-    private val resources: Resources,
-    private val context: Context
+    private val windowManager: WindowManager, // 뷰 위치 업데이트에 사용
+    private val resources: Resources, // 화면 크기 등의 리소스 접근
+    private val context: Context // 인텐트 시작 등등..
 ) {
     
     // 드래그 관련 변수들
@@ -190,7 +190,7 @@ class DragHandler(
     private fun navigateToMainApp() {
         try {
             val intent = Intent(context, MainActivity::class.java).apply {
-                // 안정적으로 처리
+                // 안정적 처리 위해서
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or // 새로 시작
                         Intent.FLAG_ACTIVITY_CLEAR_TOP or // 기존 액티비티 제거
                         Intent.FLAG_ACTIVITY_SINGLE_TOP // 이미 실행 중이면 사용

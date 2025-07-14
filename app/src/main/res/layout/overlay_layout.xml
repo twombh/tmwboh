@@ -28,7 +28,7 @@
             android:layout_height="50dp"
             android:layout_marginRight="16dp"
             android:src="@drawable/tmoneyapp"
-            android:background="#4CAF50" />
+            android:background="#FFFFFF" />
 
         <!-- 텍스트 영역: flex-direction: column, justify-content: center, align-items: flex-start, gap: 2px -->
         <LinearLayout
