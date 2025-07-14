@@ -14,26 +14,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.dynamic.viewmodel.OverlayViewModel
 
+// 메인 화면
 class MainActivity : AppCompatActivity() {
     
-    private val viewModel: OverlayViewModel by viewModels()
+    private val viewModel: OverlayViewModel by viewModels() // viewmodel을 activity에 바인딩 - ViewModel을 자동으로 생성하고 이후에는 기존 인스턴스를 재사용합
     
-    // View 참조
+    // View 참조 변수 선언 (나중에 초기화)
     private lateinit var statusText: TextView
     private lateinit var permissionStatusText: TextView
     private lateinit var toggleButton: Button
     
     // 토스트 중복 방지
     private var hasShownPermissionToast = false
-    
-    // 권한 요청 런처
+
+    // 오버레이 권한 설정 후 결과를 처리하는 런처 등록
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { _ ->
         // 권한 설정 후 UI 상태 재확인
         updateUIBasedOnPermission()
     }
-    
+
+    // 액티비티 생성 시 호출되는 함수
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -42,36 +44,30 @@ class MainActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_main)
         
-        initViews()
-        setupViews()
-        observeViewModel()
+        initViews() // 뷰 참조 초기화
+        setupViews() // 이벤트 리스너 설정
+        observeViewModel() // ViewModel LiveData 관찰 시작
         
-        // 초기 상태 설정 (권한 및 플래그 상태 확인)
+        // 초기 상태 설정 - 권한 및 플래그 상태 확인
         updateUIBasedOnPermission()
     }
     
-    /**
-     * 뷰 초기화
-     */
+    // 뷰를 참조해 변수에 저장
     private fun initViews() {
         statusText = findViewById(R.id.statusText)
         permissionStatusText = findViewById(R.id.permissionStatusText)
         toggleButton = findViewById(R.id.toggleButton)
     }
-    
-    /**
-     * 뷰 설정
-     */
+
+    // 버튼에 클릭 리스너 부착
     private fun setupViews() {
         // 오버레이 토글 버튼 클릭 리스너
         toggleButton.setOnClickListener {
-            handleToggleButtonClick()
+            handleToggleButtonClick() // 버튼 클릭 시 실행할 동작 정의
         }
     }
-    
-    /**
-     * 토글 버튼 클릭 처리
-     */
+
+    // 토글 버튼 클릭 시 처리 로직
     private fun handleToggleButtonClick() {
         if (hasOverlayPermission()) {
             // 권한이 있으면 플래그 토글
@@ -116,10 +112,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun updatePermissionStatusUI(hasPermission: Boolean) {
         if (hasPermission) {
-            permissionStatusText.text = "✅ 권한 허용됨"
+            permissionStatusText.text = "권한 허용됨"
             permissionStatusText.setTextColor(getColor(android.R.color.holo_green_dark))
         } else {
-            permissionStatusText.text = "❌ 권한 필요"
+            permissionStatusText.text = "권한 필요"
             permissionStatusText.setTextColor(getColor(android.R.color.holo_red_dark))
         }
     }
