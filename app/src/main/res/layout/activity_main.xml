@@ -53,9 +53,9 @@
             android:id="@+id/permissionStatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="✅ 권한 허용됨"
+            android:text="권한 허용됨"
             android:textSize="14sp"
-            android:textColor="@android:color/holo_green_dark" />
+            android:textColor="@android:color/holo_blue_dark" />
 
     </LinearLayout>
 
@@ -64,10 +64,10 @@
         android:id="@+id/toggleButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/white"
         android:text="오버레이 켜기 (현재: 0)"
-        android:textSize="18sp"
-        android:textColor="@android:color/white"
-        android:background="@android:color/holo_green_light"
-        android:layout_marginBottom="16dp" />
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 
 </LinearLayout>

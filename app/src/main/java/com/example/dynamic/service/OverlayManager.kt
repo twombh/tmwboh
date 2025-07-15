@@ -70,7 +70,7 @@ class OverlayManager(
         // 가로와 세로 중 더 작인 비율을 선택하여 화면 밖으로 나가는 것 방지
         val scaleFactor = minOf(widthRatio, heightRatio)
         
-        Log.d(TAG, "상대적 크기: $scaleFactor (가로비: $widthRatio, 세로비: $heightRatio)")
+        Log.d(TAG, "더 작은 비율 크기: $scaleFactor (가로비: $widthRatio, 세로비: $heightRatio)")
 
         // 반응형 크기 값을 계산해서 데이터 클래스에 저장
         return ResponsiveSizes(
@@ -131,6 +131,13 @@ class OverlayManager(
             // 내부 상태 저장
             overlayView = view
             layoutParams = params
+
+            // 실제 픽셀 크기 확인을 위한 post 로그
+            view.post {
+                val actualWidth = view.width
+                val actualHeight = view.height
+                Log.d(TAG, "화면에 표시된 오버레이 실제 크기: ${actualWidth}px x ${actualHeight}px")
+            }
             
             Log.d(TAG, "오버레이 생성 완료 (크기: ${responsiveSizes.overlayWidth}x${responsiveSizes.overlayHeight}dp)")
             return Pair(view, params)
@@ -140,7 +147,9 @@ class OverlayManager(
             return null
         }
     }
-    
+
+
+
     // 크기와 텍스트 사이즈 적용
     private fun applyResponsiveSizes(view: View) {
         // 컨테이너 최소 크기 및 패딩 설정
@@ -148,6 +157,7 @@ class OverlayManager(
         container?.let { cont ->
             // 좌우 패딩 적용 (좌우 24dp → 반응형)
             val paddingPx = dpToPx(responsiveSizes.padding24dp.toFloat()).toInt()
+            // setPadding은 int 밖에 안됨
             cont.setPadding(paddingPx, 0, paddingPx, 0)
             
             // 최소 크기 설정

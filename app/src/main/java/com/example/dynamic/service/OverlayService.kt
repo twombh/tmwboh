@@ -101,7 +101,7 @@ class OverlayService : Service() {
         
         Log.d(TAG, "상태 체크 - 플래그: $currentFlag, 오버레이보이는지: $isOverlayVisible")
         Log.d(TAG, "실제 View visibility: $actualVisibility")
-        Log.d(TAG, "표시해야함: $shouldShow (플래그만으로 결정)")
+        Log.d(TAG, "표시해야함: $shouldShow")
         
         // 실제 View 상태와 '오버레이보이는지' 상태가 다르면 경고 - 에러 처리
         val actuallyVisible = (actualVisibility == "VISIBLE")

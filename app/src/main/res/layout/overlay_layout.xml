@@ -8,7 +8,7 @@
     android:gravity="center_vertical|start"
     android:background="#FFFFFF">
 
-    <!-- gap: 12px를 위한 상단 여백 (동적 크기) -->
+    <!-- gap: 12px를 위한 상단 여백 - 동적 크기 -->
     <Space
         android:id="@+id/topSpace"
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <!-- 이미지(로고): 동적 크기 (코드에서 제어) -->
+        <!-- 로고: 동적 크기 - 코드에서 제어 -->
         <ImageView
             android:id="@+id/logoView"
             android:layout_width="50dp"
@@ -58,7 +58,7 @@
                     android:letterSpacing="-0.01"
                     android:fontFamily="sans-serif" />
 
-                <!-- gap: 4px (동적 크기) -->
+                <!-- gap: 4px - 동적 크기 -->
                 <Space
                     android:id="@+id/middleSpace"
                     android:layout_width="4dp"
@@ -79,7 +79,7 @@
 
             </LinearLayout>
 
-            <!-- gap: 2px (동적 크기) -->
+            <!-- gap: 2px - 동적 크기 -->
             <Space
                 android:id="@+id/bottomSpace"
                 android:layout_width="match_parent"
@@ -102,7 +102,7 @@
 
     </LinearLayout>
 
-    <!-- gap: 12px를 위한 하단 여백 (동적 크기) -->
+    <!-- gap: 12px를 위한 하단 여백 - 동적 크기 -->
     <Space
         android:id="@+id/bottomSpaceMain"
         android:layout_width="match_parent"

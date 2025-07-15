@@ -14,7 +14,7 @@ import kotlin.math.abs
 class DragHandler(
     private val windowManager: WindowManager, // 뷰 위치 업데이트에 사용
     private val resources: Resources, // 화면 크기 등의 리소스 접근
-    private val context: Context // 인텐트 시작 등등..
+    private val context: Context
 ) {
     
     // 드래그 관련 변수들
@@ -26,7 +26,7 @@ class DragHandler(
     private val dragThreshold = 10f // 드래그로 인식할 최소 이동 거리 - 10px
     
     // 터치 전 배경 상태 저장용
-    private var originalBackground: GradientDrawable? = null // 원래 배경 저장
+    private var originalBackground: GradientDrawable? = null
     
     // 터치 이벤트 처리 - 드래그 기능
     fun handleTouchEvent(
@@ -141,6 +141,7 @@ class DragHandler(
     
     // 원본 배경 복사하여 저장
     private fun saveOriginalBackground(overlayView: View) {
+        // 안전하게 다운캐스팅
         originalBackground = (overlayView.background as? GradientDrawable)?.constantState?.newDrawable() as? GradientDrawable
     }
     

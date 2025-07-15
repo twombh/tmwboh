@@ -11,7 +11,7 @@ class DynamicApplication : Application() {
     private var isOverlayServiceRunning = false // 오버레이 서비스가 실행 중인지 여부 파악
     
     companion object {
-        private const val TAG = "DynamicApplication"
+        internal const val TAG = "DynamicApplication"
     }
 
     // 시작 로그를 띄우기 위한 코드
