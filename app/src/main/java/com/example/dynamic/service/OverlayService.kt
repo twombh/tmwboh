@@ -220,7 +220,7 @@ class OverlayService : Service() {
         }
     }
     
-    // 강제로 오버레이 숨기기 (초기화용)
+    // 강제로 오버레이 숨기기 - 초기화용
     private fun forceHideOverlay() {
         val view = overlayManager?.getOverlayView()
         if (view != null) {

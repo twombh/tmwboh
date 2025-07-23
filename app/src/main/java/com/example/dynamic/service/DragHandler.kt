@@ -5,9 +5,11 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import com.example.dynamic.DynamicApplication.Companion.TAG
 import com.example.dynamic.MainActivity
 import kotlin.math.abs
 
@@ -16,7 +18,7 @@ class DragHandler(
     private val resources: Resources, // 화면 크기 등의 리소스 접근
     private val context: Context
 ) {
-    
+    private val TAG = "DragHandler"
     // 드래그 관련 변수들
     private var initialX = 0 // 후에 x, y 사용
     private var initialY = 0
@@ -68,6 +70,7 @@ class DragHandler(
 
         saveOriginalBackground(overlayView) // 원래 배경 저장
         applyTouchFeedback(overlayView) // 터치 피드백 배경
+        Log.d(TAG, "TouchDown")
         return true
     }
     
@@ -95,6 +98,7 @@ class DragHandler(
             
             // 위치 업데이트
             updateOverlayPosition(overlayView, params, clampedX, clampedY)
+            Log.d(TAG, "TouchMove")
         }
         return true
     }
@@ -109,7 +113,7 @@ class DragHandler(
             // 클릭 시 앱으로 돌아가기 - 현재 MainActivity
             navigateToMainApp()
         }
-        
+        Log.d(TAG, "TouchUp")
         isDragging = false
         return true
     }
@@ -117,6 +121,7 @@ class DragHandler(
     // 터치 취소 동작
     private fun handleTouchCancel(overlayView: View): Boolean {
         restoreOriginalBackground(overlayView) // 원래 배경으로 돌리기
+        Log.d(TAG, "TouchCancel")
         isDragging = false // 초기화
         return true
     }
@@ -131,8 +136,21 @@ class DragHandler(
         params.x = x // 새로운 좌표로 변경
         params.y = y
         windowManager.updateViewLayout(overlayView, params) // 실제 위치 변경
+
+        // 위치 저장 - 다시 껏다 켯을때 마지막 위치 유지를 위함
+        saveOverlayPosition(x, y)
     }
-    
+
+    // 마지막 x, y 위치 저장 - 다시 껏다 켯을때 마지막 위치 유지를 위함
+    private fun saveOverlayPosition(x: Int, y: Int) {
+        val prefs = context.getSharedPreferences("overlay_prefs", Context.MODE_PRIVATE)
+        prefs.edit()
+            .putInt("last_x", x)
+            .putInt("last_y", y)
+            .apply()
+    }
+
+
     // 화면 해상도 가져오기
     private fun getScreenBounds(): Pair<Int, Int> {
         val displayMetrics = resources.displayMetrics // 가로, 세로 화소 수 호출
@@ -141,7 +159,7 @@ class DragHandler(
     
     // 원본 배경 복사하여 저장
     private fun saveOriginalBackground(overlayView: View) {
-        // 안전하게 다운캐스팅
+        // 안전하게 다운캐스팅 - 현재 배경이 GradientDrawable이라면 그것을 복사해서 originalBackground에 안전하게 저장
         originalBackground = (overlayView.background as? GradientDrawable)?.constantState?.newDrawable() as? GradientDrawable
     }
     

@@ -19,7 +19,7 @@ class OverlayManager(
     private val context: Context,
     private val windowManager: WindowManager
 ) {
-    
+
     private var overlayView: View? = null // 현재 표시 중인 오버레이 뷰
     private var layoutParams: WindowManager.LayoutParams? = null // 오버레이의 레이아웃 속성
     
@@ -119,7 +119,7 @@ class OverlayManager(
             // 코드로 둥근 모서리 배경 설정
             setupBackgrounds(view)
             
-            // WindowManager 레이아웃 파라미터(오버레이 속성) 생성
+            // WindowManager 레이아웃 파라미터(오버레이 속성 관련) 생성
             val params = createLayoutParams()
             
             // 터치 리스너 연결
@@ -328,12 +328,21 @@ class OverlayManager(
             PixelFormat.TRANSLUCENT // 배경 반투명 처리
         )
         
-        // 초기 위치 설정
+        // 위치 설정 - 초기 100, 100
         params.gravity = Gravity.TOP or Gravity.START // 오버레이를 화면 좌측 상단 기준으로 위치
-        params.x = 100
-        params.y = 100
+        val (savedX, savedY) = getSavedPosition()
+        params.x = savedX  // 저장된 X 위치 적용
+        params.y = savedY  // 저장된 Y 위치 적용
         
         return params
+    }
+
+    // 저장된 위치 불러오기 - 다시 끄고 켰을 때를 대비
+    private fun getSavedPosition(): Pair<Int, Int> {
+        val prefs = context.getSharedPreferences("overlay_prefs", Context.MODE_PRIVATE)
+        val x = prefs.getInt("last_x", 100) // 초기값
+        val y = prefs.getInt("last_y", 100)
+        return Pair(x, y)
     }
 
     // Getter 함수들

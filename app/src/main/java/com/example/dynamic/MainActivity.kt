@@ -19,9 +19,9 @@ import com.example.dynamic.viewmodel.OverlayViewModel
 // 메인 화면
 class MainActivity : AppCompatActivity() {
     
-    private val viewModel: OverlayViewModel by viewModels() // viewmodel을 activity에 바인딩 - ViewModel을 자동으로 생성하고 이후에는 기존 인스턴스를 재사용합
+    private val viewModel: OverlayViewModel by viewModels() // viewmodel을 activity에 바인딩 - ViewModel을 자동으로 생성하고 이후에는 기존 인스턴스를 재사용
     
-    // View 참조 변수 선언 (나중에 초기화)
+    // View 참조 변수 선언 - 나중에 초기화
     private lateinit var statusText: TextView
     private lateinit var permissionStatusText: TextView
     private lateinit var toggleButton: Button
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "Main onCreate")
-        // ActionBar 숨기기
+        // ActionBar 숨기기 - 실질적 필요 x
         supportActionBar?.hide()
         
         setContentView(R.layout.activity_main)
