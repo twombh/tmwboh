@@ -69,7 +69,7 @@ class DragHandler(
         initialTouchY = event.rawY
 
         saveOriginalBackground(overlayView) // 원래 배경 저장
-        applyTouchFeedback(overlayView) // 터치 피드백 배경
+        // applyTouchFeedback(overlayView) // 터치 피드백 배경
         Log.d(TAG, "TouchDown")
         return true
     }
@@ -109,7 +109,7 @@ class DragHandler(
         
         if (!isDragging) {
             // 단순 클릭으로 처리 - 클릭 애니메이션만 실행
-            performClickAnimation(overlayView)
+            // performClickAnimation(overlayView)
             // 클릭 시 앱으로 돌아가기 - 현재 MainActivity
             navigateToMainApp()
         }
@@ -163,7 +163,7 @@ class DragHandler(
         originalBackground = (overlayView.background as? GradientDrawable)?.constantState?.newDrawable() as? GradientDrawable
     }
     
-
+    /*
     // 터치 피드백 적용 - 회색 배경
     private fun applyTouchFeedback(overlayView: View) {
         val touchBackground = GradientDrawable().apply {
@@ -173,6 +173,7 @@ class DragHandler(
         }
         overlayView.background = touchBackground // 배경 적용
     }
+     */
     
     // 원본 배경으로 돌아가기
     private fun restoreOriginalBackground(overlayView: View) {
@@ -188,7 +189,8 @@ class DragHandler(
             overlayView.background = defaultBackground // 없으면 기본 배경
         }
     }
-    
+
+    /*
     // 클릭 애니메이션 효과 - 크기 아주 살짝 키움
     private fun performClickAnimation(overlayView: View) {
         overlayView.animate()
@@ -204,7 +206,8 @@ class DragHandler(
             }
             .start()
     }
-    
+    */
+
     // MainActivity로 돌아가기
     private fun navigateToMainApp() {
         try {
