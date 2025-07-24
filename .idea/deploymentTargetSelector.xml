@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-07-23T07:55:41.026272Z">
+        <DropdownSelection timestamp="2025-07-23T08:12:57.850722Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R3CRC0DR2BE" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/ohwoobin/.android/avd/Galaxy_Z_Fold6.avd" />
             </handle>
           </Target>
         </DropdownSelection>
